@@ -20,6 +20,8 @@ namespace AbcTrain
         /// </summary>
         Queue<char> C;
         
+        public string TrainCars { get; private set; }
+
         /// <summary>
         /// Constructs an operator, assumption is that traincars are always ascending.
         /// </summary>
@@ -30,6 +32,7 @@ namespace AbcTrain
             A = new Queue<char>(trainCars);
             B = new Stack<char>();
             C = new Queue<char>();
+            TrainCars = trainCars;
         }
 
         /// <summary>
