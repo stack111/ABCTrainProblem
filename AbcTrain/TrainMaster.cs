@@ -45,9 +45,10 @@ namespace AbcTrain
                     _operator.AtoB();
                     tempRail.Push(car);
                 }
-                else{
+                else
+                {
                     // this is a case where we can't service the request due to faulty input.
-                    Console.WriteLine($"M: Cannot service request {desiredCars}, unserviced cars {tempRail.ToArray()} in temporary track");
+                    Console.WriteLine($"M: Cannot service request {desiredCars}, unserviced cars {string.Join("", tempRail.ToArray())} are on temporary track.");
                     break;
                 }
             }

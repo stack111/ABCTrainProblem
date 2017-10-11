@@ -44,7 +44,7 @@ namespace AbcTrain
             {
                 char car = A.Dequeue();
                 B.Push(car);
-                Console.WriteLine($"O: putting {car} on temporary service rail.");
+                Console.WriteLine($"O: put {car} on temporary service rail");
             }
         }
 
@@ -57,7 +57,7 @@ namespace AbcTrain
             {
                 char car = B.Pop();
                 C.Enqueue(car);
-                Console.WriteLine($"O: now servicing {car} from temporary rail.");
+                Console.WriteLine($"O: service {car} from temporary rail");
             }
         }
 
@@ -70,7 +70,7 @@ namespace AbcTrain
             {
                 char car = A.Dequeue();
                 C.Enqueue(car);
-                Console.WriteLine($"O: now directly servicing {car}");
+                Console.WriteLine($"O: service {car} directly.");
             }
         }
 
