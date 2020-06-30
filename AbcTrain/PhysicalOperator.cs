@@ -8,42 +8,42 @@ namespace AbcTrain
         /// <summary>
         /// Starting point entering into the station with all cars.
         /// </summary>
-        Queue<char> A;
+        Queue<int> A;
 
         /// <summary>
         /// A servicing rail has been provided to temporarily move the cars
         /// </summary>
-        Stack<char> B;
+        Stack<int> C;
         
         /// <summary>
         /// Physical operator wants all train cars on C in order of provided desired input.
         /// </summary>
-        Queue<char> C;
+        Queue<int> B;
         
-        public string TrainCars { get; private set; }
+        public List<int> TrainCars { get; private set; }
 
         /// <summary>
         /// Constructs an operator, assumption is that traincars are always ascending.
         /// </summary>
         /// <param name="trainCars">ascending numerical values when they are at the entrance.</param>
-        public PhysicalOperator(string trainCars)
+        public PhysicalOperator(List<int> trainCars)
         {
             // eg: 1234...
-            A = new Queue<char>(trainCars);
-            B = new Stack<char>();
-            C = new Queue<char>();
+            A = new Queue<int>(trainCars);
+            C = new Stack<int>();
+            B = new Queue<int>();
             TrainCars = trainCars;
         }
 
         /// <summary>
         /// Put current car to temporary service rail
         /// </summary>
-        public void AtoB()
+        public void AtoC()
         {
             if(A.Count > 0)
             {
-                char car = A.Dequeue();
-                B.Push(car);
+                int car = A.Dequeue();
+                C.Push(car);
                 Console.WriteLine($"O: put {car} on temporary service rail");
             }
         }
@@ -51,12 +51,12 @@ namespace AbcTrain
         /// <summary>
         /// Takes most recent placed car on temporary rail and processes it in servicing
         /// </summary>
-        public void BtoC()
+        public void CtoB()
         {
-            if(B.Count > 0)
+            if(C.Count > 0)
             {
-                char car = B.Pop();
-                C.Enqueue(car);
+                int car = C.Pop();
+                B.Enqueue(car);
                 Console.WriteLine($"O: service {car} from temporary rail");
             }
         }
@@ -64,12 +64,12 @@ namespace AbcTrain
         /// <summary>
         /// Takes the next car and processes it directly in servicing
         /// </summary>
-        public void AtoC()
+        public void AtoB()
         {
             if(A.Count > 0)
             {
-                char car = A.Dequeue();
-                C.Enqueue(car);
+                int car = A.Dequeue();
+                B.Enqueue(car);
                 Console.WriteLine($"O: service {car} directly.");
             }
         }
@@ -79,16 +79,16 @@ namespace AbcTrain
         /// </summary>
         /// <param name="desiredOrder">string input of the cars to service</param>
         /// <returns>true if correct, otherwise false</returns>
-        public bool IsServiceOrderCorrect(string desiredOrder)
+        public bool IsServiceOrderCorrect(List<int> desiredOrder)
         {
-            char[] cArr = C.ToArray();
-            char[] desiredOrderCars = desiredOrder.ToCharArray();
+            int[] cArr = B.ToArray();
+            int[] desiredOrderCars = desiredOrder.ToArray();
             if(cArr.Length != desiredOrderCars.Length)
             {
                 return false;
             }
 
-            for(int i = 0; i < desiredOrder.Length; i++)
+            for(int i = 0; i < desiredOrder.Count; i++)
             {
                 if(cArr[i] != desiredOrderCars[i])
                 {

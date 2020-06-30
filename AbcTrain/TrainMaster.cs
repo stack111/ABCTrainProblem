@@ -18,40 +18,65 @@ namespace AbcTrain
         /// <summary>
         /// Assumption: Cars cannot have spaces between them.
         /// </summary>
-        /// <param name="desiredCars">string of car numbers eg: "123" or "321"</param>
-        public void ServiceCars(string desiredCars)
+        /// <param name="serviceRequest">list of train car ids</param>
+        public void ServiceCars(List<int> serviceRequest)
         {
-            char[] desiredArr = desiredCars.ToCharArray();
-            Queue<char> train = new Queue<char>(_operator.TrainCars);
-            Stack<char> tempRail = new Stack<char>();
-            int serviceCounter = 0;
+            if (GreedyAlgorithm(serviceRequest, true))
+            {
+                GreedyAlgorithm(serviceRequest, false);
+            }
+        }
+
+        /// <summary>
+        /// Simple algorithm to process the list and provide a simulation to prevent physical world errors.
+        /// </summary>
+        /// <param name="serviceRequest">The list of car ids which should be services</param>
+        /// <param name="simulate">This parameter could be implemented other ways the objective is to minimize impact on <see cref="PhysicalOperator"/></param>
+        /// <returns></returns>
+        private bool GreedyAlgorithm(List<int> serviceRequest, bool simulate)
+        {
+            Queue<int> train = new Queue<int>(_operator.TrainCars);
+            Stack<int> tempRail = new Stack<int>();
+            int counter = 0;
             while(train.Count > 0 || tempRail.Count > 0)
             {
-                if(train.Count > 0 && train.Peek() == desiredArr[serviceCounter])
+                if(train.Count > 0 && train.Peek() == serviceRequest[counter])
                 {
-                     train.Dequeue();
-                    _operator.AtoC();
-                    serviceCounter++;
+                    train.Dequeue();
+                    if (!simulate)
+                    {
+                        _operator.AtoB();
+                    }
+                    
+                    counter++;
                 }
-                else if(tempRail.Count > 0 && tempRail.Peek() == desiredArr[serviceCounter])
+                else if(tempRail.Count > 0 && tempRail.Peek() == serviceRequest[counter])
                 {
-                    _operator.BtoC();
+                    if (!simulate)
+                    {
+                        _operator.CtoB();
+                    }
+
                     tempRail.Pop();
-                    serviceCounter++;
+                    counter++;
                 }
                 else if(train.Count > 0)
                 {
-                    char car = train.Dequeue();
-                    _operator.AtoB();
-                    tempRail.Push(car);
+                    tempRail.Push(train.Dequeue());
+                    if (!simulate)
+                    {
+                        _operator.AtoC();
+                    }
                 }
                 else
                 {
                     // this is a case where we can't service the request due to faulty input.
-                    Console.WriteLine($"M: Cannot service request {desiredCars}, unserviced cars {string.Join("", tempRail.ToArray())} are on temporary track.");
-                    break;
+                    Console.WriteLine($"Cannot service request {serviceRequest}, unserviced cars {string.Join("", tempRail.ToArray())} are on temporary track.");
+                    return false;
                 }
             }
+
+            return true;
         }
     }
 }
